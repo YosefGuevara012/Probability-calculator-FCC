@@ -11,6 +11,18 @@ class Hat:
       for i in range(value):
         self.contents.append(key)
 
+  def draw(self, extracted):
+    contents = []
+    if extracted > len(self.contents):
+      return self.contents
+    else:
+      for i in range(extracted):
+        choise = random.choice(self.contents)
+        contents.append(choise)
+        self.contents.remove(choise)
+
+      print(contents)
+      return contents
     
     
 
