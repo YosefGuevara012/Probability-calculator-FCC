@@ -1,69 +1,51 @@
 ### Assignment
 
-Complete the `Category` class in `budget.py`. It should be able to instantiate objects based on different budget categories like *food*, *clothing*, and *entertainment*. When objects are created, they are passed in the name of the category. The class should have an instance variable called `ledger` that is a list. The class should also contain the following methods:
+Suppose there is a hat containing 5 blue balls, 4 red balls, and 2 green balls. What is the probability that a random draw of 4 balls will contain at least 1 red ball and 2 green balls? While it would be possible to calculate the probability using advanced mathematics, an easier way is to write a program to perform a large number of experiments to estimate an approximate probability.
 
-* A `deposit` method that accepts an amount and description. If no description is given, it should default to an empty string. The method should append an object to the ledger list in the form of `{"amount": amount, "description": description}`.
-* A `withdraw` method that is similar to the `deposit` method, but the amount passed in should be stored in the ledger as a negative number. If there are not enough funds, nothing should be added to the ledger. This method should return `True` if the withdrawal took place, and `False` otherwise.
-* A `get_balance` method that returns the current balance of the budget category based on the deposits and withdrawals that have occurred.
-* A `transfer` method that accepts an amount and another budget category as arguments. The method should add a withdrawal with the amount and the description "Transfer to [Destination Budget Category]". The method should then add a deposit to the other budget category with the amount and the description "Transfer from [Source Budget Category]". If there are not enough funds, nothing should be added to either ledgers. This method should return `True` if the transfer took place, and `False` otherwise.
-* A `check_funds` method that accepts an amount as an argument. It returns `False` if the amount is greater than the balance of the budget category and returns `True` otherwise. This method should be used by both the `withdraw` method and `transfer` method.
+For this project, you will write a program to determine the approximate probability of drawing certain balls randomly from a hat. 
 
-When the budget object is printed it should display:
-* A title line of 30 characters where the name of the category is centered in a line of `*` characters.
-* A list of the items in the ledger. Each line should show the description and amount. The first 23 characters of the description should be displayed, then the amount. The amount should be right aligned, contain two decimal places, and display a maximum of 7 characters.
-* A line displaying the category total.
-
-Here is an example of the output:
+First, create a `Hat` class in `prob_calculator.py`. The class should take a variable number of arguments that specify the number of balls of each color that are in the hat. For example, a class object could be created in any of these ways:
 ```
-*************Food*************
-initial deposit        1000.00
-groceries               -10.15
-restaurant and more foo -15.89
-Transfer to Clothing    -50.00
-Total: 923.96
+hat1 = Hat(yellow=3, blue=2, green=6)
+hat2 = Hat(red=5, orange=4)
+hat3 = Hat(red=5, orange=4, black=1, blue=0, pink=2, striped=9)
 ```
 
-Besides the `Category` class, create a function (outside of the class) called `create_spend_chart` that takes a list of categories as an argument. It should return a string that is a bar chart.
+A hat will always be created with at least one ball. The arguments passed into the hat object upon creation should be converted to a `contents` instance variable. `contents` should be a list of strings containing one item for each ball in the hat. Each item in the list should be a color name representing a single ball of that color. For example, if your hat is `{"red": 2, "blue": 1}`, `contents` should be `["red", "red", "blue"]`.
 
-The chart should show the percentage spent in each category passed in to the function. The percentage spent should be calculated only with withdrawals and not with deposits. Down the left side of the chart should be labels 0 - 100. The "bars" in the bar chart should be made out of the "o" character. The height of each bar should be rounded down to the nearest 10. The horizontal line below the bars should go two spaces past the final bar. Each category name should be written vertically below the bar. There should be a title at the top that says "Percentage spent by category".
+The `Hat` class should have a `draw` method that accepts an argument indicating the number of balls to draw from the hat. This method should remove balls at random from `contents` and return those balls as a list of strings. The balls should not go back into the hat during the draw, similar to an urn experiment without replacement. If the number of balls to draw exceeds the available quantity, return all the balls.
 
-This function will be tested with up to four categories.
+Next, create an `experiment` function in `prob_calculator.py` (not inside the `Hat` class). This function should accept the following arguments:
+* `hat`: A hat object containing balls that should be copied inside the function.
+* `expected_balls`: An object indicating the exact group of balls to attempt to draw from the hat for the experiment. For example, to determine the probability of drawing 2 blue balls and 1 red ball from the hat, set `expected_balls` to `{"blue":2, "red":1}`.
+* `num_balls_drawn`: The number of balls to draw out of the hat in each experiment.
+* `num_experiments`: The number of experiments to perform. (The more experiments performed, the more accurate the approximate probability will be.)
 
-Look at the example output below very closely and make sure the spacing of the output matches the example exactly.
+The `experiment` function should return a probability. 
+
+For example, let's say that you want to determine the probability of getting at least 2 red balls and 1 green ball when you draw 5 balls from a hat containing 6 black, 4 red, and 3 green. To do this, we perform `N` experiments, count how many times `M` we get at least 2 red balls and 1 green ball, and estimate the probability as `M/N`. Each experiment consists of starting with a hat containing the specified balls, drawing a number of balls, and checking if we got the balls we were attempting to draw.
+
+Here is how you would call the `experiment` function based on the example above with 2000 experiments:
 
 ```
-Percentage spent by category
-100|          
- 90|          
- 80|          
- 70|          
- 60| o        
- 50| o        
- 40| o        
- 30| o        
- 20| o  o     
- 10| o  o  o  
-  0| o  o  o  
-    ----------
-     F  C  A  
-     o  l  u  
-     o  o  t  
-     d  t  o  
-        h     
-        i     
-        n     
-        g     
+hat = Hat(black=6, red=4, green=3)
+probability = experiment(hat=hat, 
+                  expected_balls={"red":2,"green":1},
+                  num_balls_drawn=5,
+                  num_experiments=2000)
 ```
 
-The unit tests for this project are in `test_module.py`.
+Since this is based on random draws, the probability will be slightly different each time the code is run.
+
+*Hint: Consider using the modules that are already imported at the top of `prob_calculator.py`. Do not initialize random seed within `prob_calculator.py`.*
 
 ### Development
 
-Write your code in `budget.py`. For development, you can use `main.py` to test your `Category` class. Click the "run" button and `main.py` will run.
+Write your code in `prob_calculator.py`. For development, you can use `main.py` to test your code. Click the "run" button and `main.py` will run.
 
 ### Testing 
 
-We imported the tests from `test_module.py` to `main.py` for your convenience. The tests will run automatically whenever you hit the "run" button.
+The unit tests for this project are in `test_module.py`. We imported the tests from `test_module.py` to `main.py` for your convenience. The tests will run automatically whenever you hit the "run" button.
 
 ### Submitting
 
