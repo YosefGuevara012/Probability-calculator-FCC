@@ -21,10 +21,29 @@ class Hat:
         contents.append(choise)
         self.contents.remove(choise)
 
-      print(contents)
+      #print(contents)
       return contents
     
     
 
 def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
-  pass
+
+  for i in range(num_experiments):
+    
+    actual_balls = hat.draw(num_balls_drawn)
+    attempt = 0
+    for key,value in expected_balls.items():
+      if actual_balls.count(key) >= value:
+        attempt = 1
+      else:
+        attempt = 0
+
+    M = 0
+
+    if attempt == 1:
+      M += 1
+    else:
+      M += 0
+
+  print(M)
+  return M/num_experiments
