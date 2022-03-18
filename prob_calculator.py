@@ -23,27 +23,29 @@ class Hat:
 
       #print(contents)
       return contents
-    
-    
+  
 
 def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
-
+  
+  M = 0
   for i in range(num_experiments):
-    
-    actual_balls = hat.draw(num_balls_drawn)
-    attempt = 0
+    hat_copy = copy.deepcopy(hat)
+    #print(hat_copy.contents)
+    actual_balls = hat_copy.draw(num_balls_drawn)
+    # print(actual_balls)
+    attempt = 1
     for key,value in expected_balls.items():
       if actual_balls.count(key) >= value:
-        attempt = 1
+        attempt *=  1
       else:
-        attempt = 0
-
-    M = 0
-
+        attempt *= 0
+    
+    # print(attempt)
+    
     if attempt == 1:
       M += 1
     else:
       M += 0
 
-  print(M)
+  # print(M)
   return M/num_experiments
